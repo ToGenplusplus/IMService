@@ -42,7 +42,7 @@ public class StoreProduct {
 	@Enumerated(EnumType.STRING)
 	private Popularity popularity;
 	
-	@Column(name = "prod_descr")
+	@Column(name = "prod_description")
 	private String productDescription;
 	
 	@Column(nullable = false, name = "is_removed")
