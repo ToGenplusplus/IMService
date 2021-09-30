@@ -6,14 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.IMS.Category.CategoryService;
+
 @Service
 public class ProductService {
 	
 	private final ProductRepository productRepo;
+	private final CategoryService catSvc;
 
 	@Autowired
-	public ProductService(ProductRepository productRepo) {
+	public ProductService(ProductRepository productRepo, CategoryService catSvc) {
 		this.productRepo = productRepo;
+		this.catSvc = catSvc;
 	}
 	
 	/**
@@ -43,6 +47,35 @@ public class ProductService {
 	public List<Product> getAllProductsByWithIds(List<Long> prodIds)
 	{
 		return productRepo.findAllById(prodIds);
+	}
+	
+	@Transactional
+	public Product addNewProduct(Product newProd)
+	{
+		/**
+		 * CHECKS
+		 * 
+		 * REQUIRED: CATEGORY, NAME, UPC NUMBER
+		 * UNIQUE: UPC_NUMBER
+		 */
+		if (newProd.getCategory() == null || newProd.getProductName() == null || newProd.getUpcNumber() == null) return null;
+		
+		if(newProd.getUpcNumber().toString().length() != 12) return null;
+		
+		if(newProd.getCategory().getId() == null || catSvc.getCategoryById(newProd.getCategory().getId()) == null) return null;
+		
+		List<Product> allProds = getAllProducts();
+		
+		for (Product prod : allProds)
+		{
+			if (prod.getUpcNumber().equals(newProd.getUpcNumber()))
+			{
+				return null;
+			}
+		}
+		
+		productRepo.saveAndFlush(newProd);
+		return newProd; 
 	}
 	
 	@Transactional

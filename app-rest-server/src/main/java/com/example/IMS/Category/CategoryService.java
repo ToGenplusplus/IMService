@@ -14,6 +14,12 @@ public class CategoryService {
 		this.categoryRepo = categoryRepo;
 	}
 	
+	public Category getCategoryById(long categoryId)
+	{
+		if(!categoryRepo.findById(categoryId).isPresent()) return null;
+		return categoryRepo.getById(categoryId);
+	}
+	
 	
 
 }

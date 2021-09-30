@@ -63,7 +63,15 @@ public class StoreProductService {
 	@Transactional
 	public StoreProduct addNewProductToStoreInventory(StoreProduct newStoreProd)
 	{
+		/**
+		 * Checks
+		 * REQUIRED: CATEGORY, PRODUCT, STORE
+		 * new product name must not exist in inventory
+		 * upc must not already exist in inventory
+		 * 
+		 */
 		
+		return null;
 	}
 	
 	@Transactional
@@ -83,7 +91,7 @@ public class StoreProductService {
 		
 		//this checks if we need to update the product entity associated with this store product
 		if((prod.getProductName() != null && !prod.getProductName().equals(prodToUpdate.getProduct().getProductName()))
-				|| (prod.getUpcNumber() != null && prod.getUpcNumber() != prodToUpdate.getProduct().getUpcNumber()))
+				|| (prod.getUpcNumber() != null && prod.getUpcNumber().equals(prodToUpdate.getProduct().getUpcNumber())))
 		{
 			updatedProduct = prodSvc.updateProduct(prod);
 		}

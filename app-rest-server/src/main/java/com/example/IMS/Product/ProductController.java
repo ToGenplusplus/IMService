@@ -11,32 +11,40 @@ import com.example.IMS.ApiResponse.ApiResponse;
 @RequestMapping(path = "api/v1/products", produces = "application/json; charset=UTF-8")
 public class ProductController {
 	
-	private final ProductService prodService;
+	private final ProductService prodSvc;
 	
 	
 	@Autowired
-	public ProductController(ProductService prodService) {
+	public ProductController(ProductService prodSvc) {
 		super();
-		this.prodService = prodService;
+		this.prodSvc = prodSvc;
 	}
 
 	@GetMapping(path = "/all")
 	@ResponseBody
 	public ApiResponse<List<Product>> getAllProducts()
 	{
-		return ApiResponse.success(prodService.getAllProducts());
+		return ApiResponse.success(prodSvc.getAllProducts());
 	}
 	
 	@GetMapping(path = "/by_category/{category_id}")
 	public ApiResponse<List<Product>> getAllProductsByCategoryId(@PathVariable("category_id")long categoryId)
 	{
-		return ApiResponse.success(prodService.getAllProducts());
+		return ApiResponse.success(prodSvc.getAllProducts());
+	}
+	
+	@PostMapping(path = "/product/new")
+	public ApiResponse<Product> addNewProduct(@RequestBody Product newProd)
+	{
+		Product newProdAdded = prodSvc.addNewProduct(newProd);
+		if (newProdAdded == null) return ApiResponse.failure("Could not add new product, check values to make sure they are valid");
+		return ApiResponse.success(newProdAdded);
 	}
 	
 	@PutMapping(path = "/product/update")
 	public ApiResponse<Product> getAllProductsByCategoryId(@RequestBody Product product)
 	{
-		Product updatedProduct = prodService.updateProduct(product);
+		Product updatedProduct = prodSvc.updateProduct(product);
 		if(updatedProduct == null || !product.equals(updatedProduct)) return ApiResponse.failure("Could not update product, check values to make sure they are valid");
 		return ApiResponse.success(updatedProduct);
 	}
