@@ -6,6 +6,7 @@ import com.example.IMS.Popularity;
 import com.example.IMS.Product.Product;
 import com.example.IMS.Store.Store;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.*;
 
@@ -112,6 +113,8 @@ public class StoreProduct {
 		this.productDescription = productDescription;
 	}
 
+	//used internally for determining whether product has been "removed" from a stores inventory or not
+	@JsonIgnore
 	public Boolean getIsRemoved() {
 		return isRemoved;
 	}
