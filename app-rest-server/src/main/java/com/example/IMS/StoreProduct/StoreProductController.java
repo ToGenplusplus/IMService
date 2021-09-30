@@ -22,14 +22,15 @@ public class StoreProductController {
 	}
 	
 	@GetMapping(path = "/all/{store_id}")
-	public ApiResponse<List<StoreProduct>> getAllProductsForStoreByStoreId(@PathVariable("store_id")long storeId)
+	public ApiResponse<List<StoreProduct>> getAllProductsForStoreByStoreId(@PathVariable("store_id") long storeId,
+			@RequestParam(value ="inStock", required = false)String inStock)
 	{
-		List<StoreProduct> storeProds = storeProdSvc.getAllProductsForStoreByStoreId(storeId);
+		List<StoreProduct> storeProds = storeProdSvc.getAllProductsForStoreByStoreId(storeId, inStock);
 		if (storeProds == null) return ApiResponse.failure(String.format("Could not find store with id ' %d'  ", storeId));
 		return ApiResponse.success(storeProds);
 	}
 	
-	@GetMapping(path = "/product/{store_id}/{product_id}")
+	@GetMapping(path = "/product/by_id/{store_id}/{product_id}")
 	public ApiResponse<StoreProduct> getAStoresProductByStoreIdAndProductId(@PathVariable("store_id")long storeId, @PathVariable("product_id") long productId)
 	{
 		StoreProduct storeProd = storeProdSvc.getAStoresProductByStoreIdAndProductId(storeId, productId);
@@ -37,5 +38,20 @@ public class StoreProductController {
 		return ApiResponse.success(storeProd);
 	}
 	
+	@GetMapping(path = "/product/by_upc/{store_id}/{product_upc}")
+	public ApiResponse<StoreProduct> getAStoresProductByStoreIdAndProductIUpcNumber(@PathVariable("store_id")long storeId, @PathVariable("product_upc") long upcNumber)
+	{
+		StoreProduct storeProd = storeProdSvc.getAStoresProductByStoreIdAndProductIUpcNumber(storeId, upcNumber);
+		if (storeProd == null) return ApiResponse.failure(String.format("Could not retrieve product for store with id ' %d ' and product with UPC  ' %d '  ", storeId, upcNumber));
+		return ApiResponse.success(storeProd);
+	}
+	
+	@DeleteMapping(path = "/product/by_id/{store_id}/{product_id}")
+	public ApiResponse<Long> removeProductFromStoreInventoryByProductId(@PathVariable("store_id")long storeId, @PathVariable("product_id") long productId)
+	{
+		long idOfProdRemoved = storeProdSvc.removeProductFromStoreInventoryByProductId(storeId, productId);
+		if (idOfProdRemoved == -1) return ApiResponse.failure(String.format("Could not remove product for store with id ' %d ' and product with id ' %d '  ", storeId, productId));
+		return ApiResponse.success(idOfProdRemoved);
+	}
 
 }
