@@ -32,5 +32,13 @@ public class ProductController {
 	{
 		return ApiResponse.success(prodService.getAllProducts());
 	}
+	
+	@PutMapping(path = "/product/update")
+	public ApiResponse<Product> getAllProductsByCategoryId(@RequestBody Product product)
+	{
+		Product updatedProduct = prodService.updateProduct(product);
+		if(updatedProduct == null || !product.equals(updatedProduct)) return ApiResponse.failure("Could not update product, check values to make sure they are valid");
+		return ApiResponse.success(updatedProduct);
+	}
 
 }

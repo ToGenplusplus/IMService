@@ -30,7 +30,7 @@ public class StoreProductController {
 		return ApiResponse.success(storeProds);
 	}
 	
-	@GetMapping(path = "/product/by_id/{store_id}/{product_id}")
+	@GetMapping(path = "/store-product/by_id/{store_id}/{product_id}")
 	public ApiResponse<StoreProduct> getAStoresProductByStoreIdAndProductId(@PathVariable("store_id")long storeId, @PathVariable("product_id") long productId)
 	{
 		StoreProduct storeProd = storeProdSvc.getAStoresProductByStoreIdAndProductId(storeId, productId);
@@ -38,7 +38,7 @@ public class StoreProductController {
 		return ApiResponse.success(storeProd);
 	}
 	
-	@GetMapping(path = "/product/by_upc/{store_id}/{product_upc}")
+	@GetMapping(path = "/store-product/by_upc/{store_id}/{product_upc}")
 	public ApiResponse<StoreProduct> getAStoresProductByStoreIdAndProductIUpcNumber(@PathVariable("store_id")long storeId, @PathVariable("product_upc") long upcNumber)
 	{
 		StoreProduct storeProd = storeProdSvc.getAStoresProductByStoreIdAndProductIUpcNumber(storeId, upcNumber);
@@ -46,7 +46,15 @@ public class StoreProductController {
 		return ApiResponse.success(storeProd);
 	}
 	
-	@DeleteMapping(path = "/product/by_id/{store_id}/{product_id}")
+	@PutMapping(path = "/store-product/update")
+	public ApiResponse<StoreProduct> updateInventoryProduct(@RequestBody StoreProduct storeProd)
+	{
+		StoreProduct updatedProd = storeProdSvc.updateInventoryProduct(storeProd);
+		if(updatedProd == null) return ApiResponse.failure("Failed to update product, ensure data to update is valid");
+		return ApiResponse.success(updatedProd);
+	}
+	
+	@DeleteMapping(path = "/store-product/delete/by_id/{store_id}/{product_id}")
 	public ApiResponse<Long> removeProductFromStoreInventoryByProductId(@PathVariable("store_id")long storeId, @PathVariable("product_id") long productId)
 	{
 		long idOfProdRemoved = storeProdSvc.removeProductFromStoreInventoryByProductId(storeId, productId);

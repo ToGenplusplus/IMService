@@ -1,5 +1,6 @@
 package com.example.IMS.Product;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.*;
@@ -9,17 +10,14 @@ import com.example.IMS.StoreProduct.StoreProduct;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "product", uniqueConstraints = {
-        @UniqueConstraint(name = "unique_upc_prod_name",
-        		columnNames = {"upc_number","prod_name"})
-        })
+@Table(name = "product")
 public class Product {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
-	@Column(nullable = false, name = "prod_name", unique = true)
+	@Column(nullable = false, name = "prod_name")
 	private String productName;
 	
 	@Column(nullable = false, name = "upc_number", unique = true, length = 12)
@@ -41,9 +39,19 @@ public class Product {
 		this.category = category;
 		this.storeProducts = storeProducts;
 	}
-	
-	
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Product other = (Product) obj;
+		return Objects.equals(id, other.id) && Objects.equals(productName, other.productName)
+				&& Objects.equals(upcNumber, other.upcNumber);
+	}
 
 	public Long getId() {
 		return id;
