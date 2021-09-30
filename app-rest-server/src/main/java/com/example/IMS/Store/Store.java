@@ -6,9 +6,8 @@ import java.util.Set;
 import javax.persistence.*;
 
 import com.example.IMS.StoreProduct.StoreProduct;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.*;
 
 @Entity
 @Table(name = "store")
@@ -23,7 +22,6 @@ public class Store {
 	
 	@OneToMany(mappedBy = "store", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-	@JsonManagedReference
 	private Set<StoreProduct> storeProducts;
 	
 	protected Store(){}
@@ -45,6 +43,7 @@ public class Store {
 		this.storeName = storeName;
 	}
 
+	@JsonIgnore
 	public Set<StoreProduct> getStoreProducts() {
 		return storeProducts;
 	}

@@ -6,10 +6,7 @@ import javax.persistence.*;
 
 import com.example.IMS.Category.Category;
 import com.example.IMS.StoreProduct.StoreProduct;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "product", uniqueConstraints = {
@@ -28,14 +25,12 @@ public class Product {
 	@Column(nullable = false, name = "upc_number", unique = true, length = 12)
 	private Long upcNumber;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
-	@JsonBackReference
 	private Category category;
 	
 	@OneToMany(mappedBy = "product", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-	@JsonManagedReference
 	private Set<StoreProduct> storeProducts;
 	
 	protected Product(){}
@@ -78,6 +73,7 @@ public class Product {
 		this.category = category;
 	}
 
+	@JsonIgnore
 	public Set<StoreProduct> getStoreProducts() {
 		return storeProducts;
 	}

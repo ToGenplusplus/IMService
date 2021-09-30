@@ -5,31 +5,25 @@ import javax.persistence.*;
 import com.example.IMS.Popularity;
 import com.example.IMS.Product.Product;
 import com.example.IMS.Store.Store;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.*;
 
 @Entity
 @Table(name = "store_product", uniqueConstraints = {
         @UniqueConstraint(name = "unique_store_prod",
         		columnNames = {"store_id","prod_id"})
 })
-@Getter @Setter
 public class StoreProduct {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "store_id", nullable = false)
-	@JsonBackReference
 	private Store store;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "prod_id", nullable = false)
-	@JsonBackReference
 	private Product product;
 	
 	@Column(nullable = false, name = "prod_price")
@@ -60,7 +54,17 @@ public class StoreProduct {
 		this.productDescription = productDescription;
 		this.isRemoved = isRemoved;
 	}
+	
+	
 
+	@Override
+	public String toString() {
+		return "StoreProduct [id=" + id + ", store=" + store + ", product=" + product + ", price=" + price
+				+ ", inventoryCount=" + inventoryCount + ", popularity=" + popularity + ", productDescription="
+				+ productDescription + ", isRemoved=" + isRemoved + "]";
+	}
+
+	@JsonIgnore
 	public Long getId() {
 		return id;
 	}
