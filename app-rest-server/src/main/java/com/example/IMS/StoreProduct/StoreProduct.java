@@ -10,8 +10,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "store_product", uniqueConstraints = {
-        @UniqueConstraint(name = "unique_store_prod_name",
-        		columnNames = {"prod_name","store_id","prod_id"})
+        @UniqueConstraint(name = "unique_store_prod",
+        		columnNames = {"store_id","prod_id"})
 })
 @Getter @Setter @NoArgsConstructor 
 
@@ -29,9 +29,6 @@ public class StoreProduct {
     @JoinColumn(name = "prod_id", nullable = false)
 	private Product product;
 	
-	@Column(nullable = false, name = "prod_name")
-	private String productName;
-	
 	@Column(nullable = false, name = "prod_price")
 	private Double price;
 	
@@ -48,11 +45,10 @@ public class StoreProduct {
 	@Column(nullable = false, name = "is_removed")
 	private Boolean isRemoved;
 
-	public StoreProduct(Store store, Product product, String productName, Double price, int inventoryCount,
+	public StoreProduct(Store store, Product product, Double price, int inventoryCount,
 			Popularity popularity, String productDescription, Boolean isRemoved) {
 		this.store = store;
 		this.product = product;
-		this.productName = productName;
 		this.price = price;
 		this.inventoryCount = inventoryCount;
 		this.popularity = popularity;

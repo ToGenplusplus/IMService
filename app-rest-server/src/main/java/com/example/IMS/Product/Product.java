@@ -18,6 +18,9 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
+	@Column(nullable = false, name = "prod_name")
+	private String productName;
+	
 	@Column(nullable = false, name = "upc_number", unique = true, length = 12)
 	private Long upcNumber;
 	
@@ -29,11 +32,14 @@ public class Product {
             cascade = CascadeType.ALL)
 	private Set<StoreProduct> storeProducts;
 
-	public Product(Long upcNumber, Category category, Set<StoreProduct> storeProducts) {
+	public Product(String productName, Long upcNumber, Category category, Set<StoreProduct> storeProducts) {
+		this.productName = productName;
 		this.upcNumber = upcNumber;
 		this.category = category;
 		this.storeProducts = storeProducts;
 	}
+
+	
 	
 	
 

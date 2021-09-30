@@ -34,5 +34,15 @@ public class ProductService {
 		return productRepo.getProductByCategoryId(categoryId);
 	}
 	
+	/**
+	 * given a  list of id's return a list of products associated with those ids
+	 * @param prodIds
+	 * @return List<Product>
+	 */
+	public List<Product> getAllProductsByWithIds(List<Long> prodIds)
+	{
+		return productRepo.findAllById(prodIds);
+	}
+	
 	
 }
