@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class StoreProductService {
 
-	private StoreProductRepository storeProdRepo;
+	private final StoreProductRepository storeProdRepo;
 
 	@Autowired
 	public StoreProductService(StoreProductRepository storeProdRepo) {

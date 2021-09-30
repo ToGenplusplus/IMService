@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class StoreService {
 	
-	private StoreRepository storeRepo;
+	private final StoreRepository storeRepo;
 
 	@Autowired
 	public StoreService(StoreRepository storeRepo) {

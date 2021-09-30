@@ -6,12 +6,12 @@ import java.util.Set;
 import javax.persistence.*;
 
 import com.example.IMS.StoreProduct.StoreProduct;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.*;
 
 @Entity
 @Table(name = "store")
-@Getter @Setter @NoArgsConstructor 
 public class Store {
 	
 	@Id
@@ -23,12 +23,37 @@ public class Store {
 	
 	@OneToMany(mappedBy = "store", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private Set<StoreProduct> storeProducts;
+	
+	protected Store(){}
 
 	public Store(String storeName, Set<StoreProduct> storeProducts) {
 		this.storeName = storeName;
 		this.storeProducts = storeProducts;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getStoreName() {
+		return storeName;
+	}
+
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
+
+	public Set<StoreProduct> getStoreProducts() {
+		return storeProducts;
+	}
+
+	public void setStoreProducts(Set<StoreProduct> storeProducts) {
+		this.storeProducts = storeProducts;
+	}
+	
+	
 
 	
 
