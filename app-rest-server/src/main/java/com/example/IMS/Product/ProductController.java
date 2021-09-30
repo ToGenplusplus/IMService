@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.IMS.ApiResponse.ApiResponse;
+import com.example.IMS.ApiResponse.MethodReturnObject;
 
 @RestController
 @RequestMapping(path = "api/v1/products", produces = "application/json; charset=UTF-8")
 public class ProductController {
 	
 	private final ProductService prodSvc;
+	private final String FAIL = "OPERATION FAILED : ";
 	
 	
 	@Autowired
@@ -44,8 +46,9 @@ public class ProductController {
 	@PutMapping(path = "/product/update")
 	public ApiResponse<Product> getAllProductsByCategoryId(@RequestBody Product product)
 	{
-		Product updatedProduct = prodSvc.updateProduct(product);
-		if(updatedProduct == null || !product.equals(updatedProduct)) return ApiResponse.failure("Could not update product, check values to make sure they are valid");
+		MethodReturnObject<Product>  mro = prodSvc.updateProduct(product);
+		Product updatedProduct = mro.getReturnMessage() == null ? mro.getReturnObject() : null;
+		if(updatedProduct == null || !product.equals(updatedProduct)) return ApiResponse.failure(FAIL + mro.getReturnMessage());
 		return ApiResponse.success(updatedProduct);
 	}
 

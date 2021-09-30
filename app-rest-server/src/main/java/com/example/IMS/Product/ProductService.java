@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.IMS.ApiResponse.MethodReturnObject;
 import com.example.IMS.Category.CategoryService;
 
 @Service
@@ -79,10 +80,10 @@ public class ProductService {
 	}
 	
 	@Transactional
-	public Product updateProduct(Product newProd)
+	public MethodReturnObject<Product> updateProduct(Product newProd)
 	{
 		//can only update product name and upc_number
-		if (newProd.getId() == null) return null;
+		if (newProd.getId() == null) return MethodReturnObject.of("id of product to update is missing from request body", null);
 		
 		Product prodToUpdate = productRepo.getById(newProd.getId());
 		
@@ -116,7 +117,7 @@ public class ProductService {
 		prodToUpdate.setProductName(newProd.getProductName() != null ? newProd.getProductName() : prodToUpdate.getProductName());
 		
 		productRepo.saveAndFlush(prodToUpdate);
-		return prodToUpdate;
+		return MethodReturnObject.of(null, prodToUpdate);
 	}
 	
 	

@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 public class StoreProductController {
 	
 	private final StoreProductService storeProdSvc;
+	private final String FAIL = "OPERATION FAILED : ";
 
 	@Autowired
 	public StoreProductController(StoreProductService storeProdSvc) {

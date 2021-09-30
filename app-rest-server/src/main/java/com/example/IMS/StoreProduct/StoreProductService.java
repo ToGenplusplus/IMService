@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.stereotype.Service;
 
 import com.example.IMS.Popularity;
+import com.example.IMS.ApiResponse.MethodReturnObject;
 import com.example.IMS.Product.Product;
 import com.example.IMS.Product.ProductService;
 import com.example.IMS.Store.StoreService;
@@ -77,6 +78,8 @@ public class StoreProductService {
 	@Transactional
 	public StoreProduct updateInventoryProduct(StoreProduct newStoreProd)
 	{
+		String errMessage = null;
+		
 		if (newStoreProd.getProduct() == null || newStoreProd.getStore() == null) return null;
 		if (newStoreProd.getProduct().getId() == null || newStoreProd.getStore().getId() == null) return null;
 		
@@ -93,7 +96,8 @@ public class StoreProductService {
 		if((prod.getProductName() != null && !prod.getProductName().equals(prodToUpdate.getProduct().getProductName()))
 				|| (prod.getUpcNumber() != null && prod.getUpcNumber().equals(prodToUpdate.getProduct().getUpcNumber())))
 		{
-			updatedProduct = prodSvc.updateProduct(prod);
+			MethodReturnObject<Product>  mro = prodSvc.updateProduct(prod);
+			updatedProduct = mro.getReturnMessage() == null ? mro.getReturnObject() : null;
 		}
 		/**
 		 * can edit product price, description, rating, inventory_count
