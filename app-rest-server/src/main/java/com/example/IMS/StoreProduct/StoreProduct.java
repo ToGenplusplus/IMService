@@ -42,7 +42,7 @@ public class StoreProduct {
 	@Column(name = "prod_description")
 	private String productDescription;
 	
-	@Column(nullable = false, name = "is_removed")
+	@Column(name = "is_removed")
 	private Boolean isRemoved;
 
 	public StoreProduct(Store store, Product product, Double price, int inventoryCount,

@@ -10,7 +10,10 @@ import com.example.IMS.StoreProduct.StoreProduct;
 import lombok.*;
 
 @Entity
-@Table(name = "product")
+@Table(name = "product", uniqueConstraints = {
+        @UniqueConstraint(name = "unique_upc_prod_name",
+        		columnNames = {"upc_number","prod_name"})
+        })
 @Getter @Setter @NoArgsConstructor 
 public class Product {
 	
@@ -18,7 +21,7 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
-	@Column(nullable = false, name = "prod_name")
+	@Column(nullable = false, name = "prod_name", unique = true)
 	private String productName;
 	
 	@Column(nullable = false, name = "upc_number", unique = true, length = 12)
