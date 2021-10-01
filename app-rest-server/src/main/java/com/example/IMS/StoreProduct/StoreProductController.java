@@ -26,9 +26,13 @@ public class StoreProductController {
 	
 	@GetMapping(path = "/all/{store_id}")
 	public ApiResponse<List<StoreProduct>> getAllProductsForStoreByStoreId(@PathVariable("store_id") long storeId,
-			@RequestParam(value ="inStock", required = false)String inStock)
+			@RequestParam(value ="inStock", required = false)String inStock,
+			@RequestParam(value ="rangeLower", required = false)String rangeLower,
+			@RequestParam(value ="rangeUpper", required = false)String rangeUpper,
+			@RequestParam(value ="rating", required = false)String rating,
+			@RequestParam(value ="category_id", required = false)String categoryId)
 	{
-		MethodReturnObject<List<StoreProduct>>  mro = storeProdSvc.getAllProductsForStoreByStoreId(storeId, inStock);
+		MethodReturnObject<List<StoreProduct>>  mro = storeProdSvc.getAllProductsForStoreByStoreId(storeId, inStock, rangeLower, rangeUpper, rating, categoryId);
 		List<StoreProduct> storeProds = mro.getReturnObject() != null ? mro.getReturnObject() : null;
 		if (storeProds == null) return ApiResponse.failure(FAIL + mro.getReturnMessage());
 		return ApiResponse.success(storeProds);

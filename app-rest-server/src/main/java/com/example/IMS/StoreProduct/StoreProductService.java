@@ -31,7 +31,9 @@ public class StoreProductService {
 		this.prodSvc = prodSvc;
 	}
 	
-	public MethodReturnObject<List<StoreProduct>> getAllProductsForStoreByStoreId(long storeId, String inStock)
+	public MethodReturnObject<List<StoreProduct>> getAllProductsForStoreByStoreId(
+			long storeId, String inStock, String rangeLower, 
+			String rangeUpper, String rating, String categoryId)
 	{
 		if (storeSvc.getStoreById(storeId) == null) return MethodReturnObject.of(String.format(MISSING_STORE_ID,storeId));
 		List<StoreProduct> storeProducts = storeProdRepo.findAll();
@@ -40,13 +42,43 @@ public class StoreProductService {
 		
 		if (inStock != null && inStock.toLowerCase().equals("true")) storeProducts.removeIf(prod -> (prod.getInventoryCount() < 1));
 		
+		if (rating != null) storeProducts.removeIf(prod -> {
+			if(prod.getPopularity() != null) return !prod.getPopularity().name().equals(rating);
+			return true;
+		});
+		
+		if(categoryId != null) storeProducts.removeIf(prod-> {
+			long prodCatId = prod.getProduct().getCategory().getId();
+			long paramCatId = Long.valueOf(categoryId);
+			
+			return prodCatId != paramCatId;
+		});
+		
+		if(rangeLower != null && rangeUpper != null) 
+		{
+			long lower = Long.valueOf(rangeLower);
+			long upper = Long.valueOf(rangeUpper);
+			
+			storeProducts.removeIf(prod -> (prod.getPrice() < lower || prod.getPrice() > upper));
+		}
+		
+		return MethodReturnObject.of(storeProducts);
+	}
+	
+	private MethodReturnObject<List<StoreProduct>> getAllProductsForStoreByStoreId(long storeId)
+	{
+		if (storeSvc.getStoreById(storeId) == null) return MethodReturnObject.of(String.format(MISSING_STORE_ID,storeId));
+		List<StoreProduct> storeProducts = storeProdRepo.findAll();
+		
+		storeProducts.removeIf(prod -> (prod.getStore().getId() != storeId || (prod.getIsRemoved() != null && prod.getIsRemoved())));
+		
 		return MethodReturnObject.of(storeProducts);
 	}
 	
 	public MethodReturnObject<StoreProduct> getAStoresProductByStoreIdAndProductId(long storeId, long productId)
 	{
 
-		MethodReturnObject<List<StoreProduct>>  mro = getAllProductsForStoreByStoreId(storeId, null);
+		MethodReturnObject<List<StoreProduct>>  mro = getAllProductsForStoreByStoreId(storeId);
 		if (mro.getReturnMessage() != null) return MethodReturnObject.of(mro.getReturnMessage());
 		List<StoreProduct> storeProducts = mro.getReturnObject();
 			
@@ -61,7 +93,7 @@ public class StoreProductService {
 	
 	public MethodReturnObject<StoreProduct> getAStoresProductByStoreIdAndProductIUpcNumber(long storeId, long upcNumber)
 	{
-		MethodReturnObject<List<StoreProduct>>  mro = getAllProductsForStoreByStoreId(storeId, null);
+		MethodReturnObject<List<StoreProduct>>  mro = getAllProductsForStoreByStoreId(storeId);
 		if (mro.getReturnMessage() != null) return MethodReturnObject.of(mro.getReturnMessage());
 		List<StoreProduct> storeProducts = mro.getReturnObject();
 			
