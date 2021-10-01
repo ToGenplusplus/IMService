@@ -18,7 +18,6 @@ public class ProductController {
 	
 	@Autowired
 	public ProductController(ProductService prodSvc) {
-		super();
 		this.prodSvc = prodSvc;
 	}
 

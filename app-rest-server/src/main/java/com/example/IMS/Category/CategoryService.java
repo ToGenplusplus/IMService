@@ -1,6 +1,8 @@
 package com.example.IMS.Category;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,11 @@ public class CategoryService {
 	@Autowired
 	public CategoryService(CategoryRepository categoryRepo) {
 		this.categoryRepo = categoryRepo;
+	}
+	
+	public List<Category> getAllProductCategories()
+	{
+		return categoryRepo.findAll();
 	}
 	
 	public Category getCategoryById(long categoryId)
