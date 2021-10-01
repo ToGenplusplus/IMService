@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.IMS.ApiResponse.ApiResponse;
 import com.example.IMS.ApiResponse.MethodReturnObject;
-import com.example.IMS.Product.Product;
 
 import lombok.AllArgsConstructor;
 

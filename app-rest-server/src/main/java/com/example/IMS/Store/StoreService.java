@@ -5,10 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.IMS.ApiResponse.ApiResponse;
 
 @Service
-public class StoreService {
+public class StoreService implements IStoreService{
 	
 	private final StoreRepository storeRepo;
 
@@ -21,6 +20,7 @@ public class StoreService {
 	 * return all stores information for a company
 	 * @return
 	 */
+	@Override
 	public List<Store> getAllStoresInCompany()
 	{
 		return storeRepo.findAll();
@@ -31,6 +31,7 @@ public class StoreService {
 	 * @param storeId
 	 * @return Store
 	 */
+	@Override
 	public Store getStoreById(long storeId)
 	{
 		if (!storeRepo.findById(storeId).isPresent()) return null;

@@ -4,17 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.stereotype.Service;
 
-import com.example.IMS.Popularity;
 import com.example.IMS.ApiResponse.MethodReturnObject;
 import com.example.IMS.Product.Product;
 import com.example.IMS.Product.ProductService;
 import com.example.IMS.Store.StoreService;
 
 @Service
-public class StoreProductService {
+public class StoreProductService implements IStoreProductService{
 
 	private final StoreProductRepository storeProdRepo;
 	private final StoreService storeSvc;
@@ -31,6 +29,7 @@ public class StoreProductService {
 		this.prodSvc = prodSvc;
 	}
 	
+	@Override
 	public MethodReturnObject<List<StoreProduct>> getAllProductsForStoreByStoreId(
 			long storeId, String inStock, String rangeLower, 
 			String rangeUpper, String rating, String categoryId)
@@ -75,6 +74,7 @@ public class StoreProductService {
 		return MethodReturnObject.of(storeProducts);
 	}
 	
+	@Override
 	public MethodReturnObject<StoreProduct> getAStoresProductByStoreIdAndProductId(long storeId, long productId)
 	{
 
@@ -91,6 +91,7 @@ public class StoreProductService {
 		return MethodReturnObject.of(storeProducts.get(0));
 	}
 	
+	@Override
 	public MethodReturnObject<StoreProduct> getAStoresProductByStoreIdAndProductIUpcNumber(long storeId, long upcNumber)
 	{
 		MethodReturnObject<List<StoreProduct>>  mro = getAllProductsForStoreByStoreId(storeId);
@@ -106,6 +107,7 @@ public class StoreProductService {
 		return MethodReturnObject.of(storeProducts.get(0));
 	}
 	
+	@Override
 	@Transactional
 	public MethodReturnObject<StoreProduct> addNewProductToStoreInventory(StoreProduct newStoreProd)
 	{
@@ -130,6 +132,7 @@ public class StoreProductService {
 		return MethodReturnObject.of(newStoreProd);
 	}
 	
+	@Override
 	@Transactional
 	public MethodReturnObject<StoreProduct> updateInventoryProduct(StoreProduct newStoreProd)
 	{
@@ -170,12 +173,7 @@ public class StoreProductService {
 		
 	}
 	
-	/**
-	 * 
-	 * @param storeId
-	 * @param productId
-	 * @ return product Id of product removed from inventory
-	*/
+	@Override
 	@Transactional
 	public MethodReturnObject<Long> removeProductFromStoreInventoryByProductId(long storeId, long productId)
 	{

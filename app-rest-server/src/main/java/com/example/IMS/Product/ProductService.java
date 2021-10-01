@@ -10,7 +10,7 @@ import com.example.IMS.ApiResponse.MethodReturnObject;
 import com.example.IMS.Category.CategoryService;
 
 @Service
-public class ProductService {
+public class ProductService implements IProductService{
 	
 	private final ProductRepository productRepo;
 	private final CategoryService catSvc;
@@ -21,35 +21,25 @@ public class ProductService {
 		this.catSvc = catSvc;
 	}
 	
-	/**
-	 * get all products in database
-	 * @return List<Product>
-	 */
+	@Override
 	public List<Product> getAllProducts()
 	{
 		return productRepo.findAll();
 	}
 	
-	/**
-	 * given a category id, return all products the given categoryId
-	 * @param categoryId
-	 * @return List<Product>
-	 */
+	@Override
 	public List<Product> getAllProductsByCategory(long categoryId)
 	{
 		return productRepo.getProductByCategoryId(categoryId);
 	}
 	
-	/**
-	 * given a  list of id's return a list of products associated with those ids
-	 * @param prodIds
-	 * @return List<Product>
-	 */
+	@Override
 	public List<Product> getAllProductsByWithIds(List<Long> prodIds)
 	{
 		return productRepo.findAllById(prodIds);
 	}
 	
+	@Override
 	@Transactional
 	public MethodReturnObject<Product> addNewProduct(Product newProd)
 	{
@@ -89,6 +79,7 @@ public class ProductService {
 		return MethodReturnObject.of(newProd); 
 	}
 	
+	@Override
 	@Transactional
 	public MethodReturnObject<Product> updateProduct(Product newProd)
 	{
