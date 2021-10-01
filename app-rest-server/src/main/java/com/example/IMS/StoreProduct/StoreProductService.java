@@ -1,5 +1,6 @@
 package com.example.IMS.StoreProduct;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,6 +127,7 @@ public class StoreProductService implements IStoreProductService{
 		
 		if(newStoreProd.getPrice() < 0) newStoreProd.setPrice(0d);
 		if(newStoreProd.getInventoryCount() < 0) newStoreProd.setInventoryCount(0);
+		newStoreProd.setDateAdded(LocalDate.now());
 		
 		storeProdRepo.saveAndFlush(newStoreProd);
 		
@@ -181,7 +183,7 @@ public class StoreProductService implements IStoreProductService{
 		if (mro.getReturnMessage() != null) return MethodReturnObject.of(mro.getReturnMessage());
 		StoreProduct prodToRemove = mro.getReturnObject();
 		
-		storeProdRepo.removeStoreProduct(storeId, productId);
+		storeProdRepo.removeStoreProduct(storeId, productId, LocalDate.now());
 		return MethodReturnObject.of(prodToRemove.getStore().getId());
 	}
 	

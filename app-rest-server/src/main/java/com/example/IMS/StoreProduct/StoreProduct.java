@@ -1,5 +1,7 @@
 package com.example.IMS.StoreProduct;
 
+import java.time.LocalDate;
+
 import javax.persistence.*;
 
 import com.example.IMS.Popularity;
@@ -39,30 +41,32 @@ public class StoreProduct {
 	@Column(name = "prod_description")
 	private String productDescription;
 	
+	@Column(name = "date_added", nullable = false)
+	private LocalDate dateAdded;
+	
+	@Column(name = "date_removed")
+	private LocalDate dateRemoved;
+	
 	@Column(name = "is_removed")
 	private Boolean isRemoved;
 	
 	protected StoreProduct() {}
 
-	public StoreProduct(Store store, Product product, Double price, int inventoryCount,
-			Popularity popularity, String productDescription, Boolean isRemoved) {
+	
+	public StoreProduct(Store store, Product product, Double price, int inventoryCount, Popularity popularity,
+			String productDescription, LocalDate dateAdded, LocalDate dateRemoved, Boolean isRemoved) {
+		super();
 		this.store = store;
 		this.product = product;
 		this.price = price;
 		this.inventoryCount = inventoryCount;
 		this.popularity = popularity;
 		this.productDescription = productDescription;
+		this.dateAdded = dateAdded;
+		this.dateRemoved = dateRemoved;
 		this.isRemoved = isRemoved;
 	}
-	
-	
 
-	@Override
-	public String toString() {
-		return "StoreProduct [id=" + id + ", store=" + store + ", product=" + product + ", price=" + price
-				+ ", inventoryCount=" + inventoryCount + ", popularity=" + popularity + ", productDescription="
-				+ productDescription + ", isRemoved=" + isRemoved + "]";
-	}
 
 	@JsonIgnore
 	public Long getId() {
@@ -116,6 +120,28 @@ public class StoreProduct {
 	public void setProductDescription(String productDescription) {
 		this.productDescription = productDescription;
 	}
+	
+	
+	public LocalDate getDateAdded() {
+		return dateAdded;
+	}
+
+
+	public void setDateAdded(LocalDate dateAdded) {
+		this.dateAdded = dateAdded;
+	}
+
+
+	@JsonIgnore
+	public LocalDate getDateRemoved() {
+		return dateRemoved;
+	}
+
+
+	public void setDateRemoved(LocalDate dateRemoved) {
+		this.dateRemoved = dateRemoved;
+	}
+
 
 	//used internally for determining whether product has been "removed" from a stores inventory or not
 	@JsonIgnore
