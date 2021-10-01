@@ -48,18 +48,29 @@ public class StoreProductService implements IStoreProductService{
 		});
 		
 		if(categoryId != null) storeProducts.removeIf(prod-> {
-			long prodCatId = prod.getProduct().getCategory().getId();
-			long paramCatId = Long.valueOf(categoryId);
-			
-			return prodCatId != paramCatId;
+			try
+			{
+				long paramCatId = Long.parseLong(categoryId);
+				long prodCatId = prod.getProduct().getCategory().getId();
+				
+				return prodCatId != paramCatId;
+			}catch( NumberFormatException nfe)
+			{
+				return false;
+			}
 		});
 		
 		if(rangeLower != null && rangeUpper != null) 
 		{
-			long lower = Long.valueOf(rangeLower);
-			long upper = Long.valueOf(rangeUpper);
-			
+			try {
+			long lower = Long.parseLong(rangeLower);
+			long upper = Long.parseLong(rangeUpper);
 			storeProducts.removeIf(prod -> (prod.getPrice() < lower || prod.getPrice() > upper));
+			
+			}catch( NumberFormatException nfe)
+			{
+				return MethodReturnObject.of(nfe.getMessage());
+			}
 		}
 		
 		return MethodReturnObject.of(storeProducts);
