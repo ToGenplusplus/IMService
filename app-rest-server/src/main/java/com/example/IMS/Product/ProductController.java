@@ -38,8 +38,9 @@ public class ProductController {
 	@PostMapping(path = "/product/new")
 	public ApiResponse<Product> addNewProduct(@RequestBody Product newProd)
 	{
-		Product newProdAdded = prodSvc.addNewProduct(newProd);
-		if (newProdAdded == null) return ApiResponse.failure("Could not add new product, check values to make sure they are valid");
+		MethodReturnObject<Product>  mro = prodSvc.addNewProduct(newProd);
+		Product newProdAdded = mro.getReturnObject() != null ? mro.getReturnObject() : null;
+		if (newProdAdded == null) return ApiResponse.failure(FAIL + mro.getReturnMessage());
 		return ApiResponse.success(newProdAdded);
 	}
 	
@@ -48,7 +49,7 @@ public class ProductController {
 	{
 		MethodReturnObject<Product>  mro = prodSvc.updateProduct(product);
 		Product updatedProduct = mro.getReturnMessage() == null ? mro.getReturnObject() : null;
-		if(updatedProduct == null || !product.equals(updatedProduct)) return ApiResponse.failure(FAIL + mro.getReturnMessage());
+		if(updatedProduct == null) return ApiResponse.failure(FAIL + mro.getReturnMessage());
 		return ApiResponse.success(updatedProduct);
 	}
 

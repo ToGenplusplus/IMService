@@ -19,6 +19,8 @@ public class StoreProductService {
 	private final StoreProductRepository storeProdRepo;
 	private final StoreService storeSvc;
 	private final ProductService prodSvc;
+	
+	private final String MISSING_STORE_ID = " Could not find store with id %d";
 
 	@Autowired
 	public StoreProductService(StoreProductRepository storeProdRepo, 
@@ -29,56 +31,76 @@ public class StoreProductService {
 		this.prodSvc = prodSvc;
 	}
 	
-	public List<StoreProduct> getAllProductsForStoreByStoreId(long storeId, String inStock)
+	public MethodReturnObject<List<StoreProduct>> getAllProductsForStoreByStoreId(long storeId, String inStock)
 	{
-		if (storeSvc.getStoreById(storeId) == null) return null;
+		if (storeSvc.getStoreById(storeId) == null) return MethodReturnObject.of(String.format(MISSING_STORE_ID,storeId));
 		List<StoreProduct> storeProducts = storeProdRepo.findAll();
 		
 		storeProducts.removeIf(prod -> (prod.getStore().getId() != storeId || (prod.getIsRemoved() != null && prod.getIsRemoved())));
 		
 		if (inStock != null && inStock.toLowerCase().equals("true")) storeProducts.removeIf(prod -> (prod.getInventoryCount() < 1));
 		
-		return storeProducts;
+		return MethodReturnObject.of(storeProducts);
 	}
 	
-	public StoreProduct getAStoresProductByStoreIdAndProductId(long storeId, long productId)
+	public MethodReturnObject<StoreProduct> getAStoresProductByStoreIdAndProductId(long storeId, long productId)
 	{
-		if (storeSvc.getStoreById(storeId) == null) return null;
-		List<StoreProduct> storeProducts = getAllProductsForStoreByStoreId(storeId, null);
+
+		MethodReturnObject<List<StoreProduct>>  mro = getAllProductsForStoreByStoreId(storeId, null);
+		if (mro.getReturnMessage() != null) return MethodReturnObject.of(mro.getReturnMessage());
+		List<StoreProduct> storeProducts = mro.getReturnObject();
 			
 		storeProducts.removeIf(prod -> (prod.getProduct().getId() != productId));
 		
-		return storeProducts.size() == 0 ? null : storeProducts.get(0);
+		if (storeProducts.size() == 0)
+		{
+			return MethodReturnObject.of(String.format("could not find store product with store id %d and product id %d",storeId, productId));
+		}
+		return MethodReturnObject.of(storeProducts.get(0));
 	}
 	
-	public StoreProduct getAStoresProductByStoreIdAndProductIUpcNumber(long storeId, long upcNumber)
+	public MethodReturnObject<StoreProduct> getAStoresProductByStoreIdAndProductIUpcNumber(long storeId, long upcNumber)
 	{
-		if (storeSvc.getStoreById(storeId) == null) return null;
-		List<StoreProduct> storeProducts = getAllProductsForStoreByStoreId(storeId, null);
+		MethodReturnObject<List<StoreProduct>>  mro = getAllProductsForStoreByStoreId(storeId, null);
+		if (mro.getReturnMessage() != null) return MethodReturnObject.of(mro.getReturnMessage());
+		List<StoreProduct> storeProducts = mro.getReturnObject();
 			
 		storeProducts.removeIf(prod -> (prod.getProduct().getUpcNumber() != upcNumber));
 		
-		return storeProducts.size() == 0 ? null : storeProducts.get(0);
+		if (storeProducts.size() == 0)
+		{
+			return MethodReturnObject.of(String.format("could not find store product with store id %d and upcNumber %d",storeId, upcNumber));
+		}
+		return MethodReturnObject.of(storeProducts.get(0));
 	}
 	
 	@Transactional
-	public StoreProduct addNewProductToStoreInventory(StoreProduct newStoreProd)
+	public MethodReturnObject<StoreProduct> addNewProductToStoreInventory(StoreProduct newStoreProd)
 	{
 		/**
 		 * Checks
-		 * REQUIRED: CATEGORY, PRODUCT, STORE
-		 * new product name must not exist in inventory
-		 * upc must not already exist in inventory
-		 * 
+		 * REQUIRED: PRODUCT, STORE
+		 * prodSvc handles the creation of new product
 		 */
 		
-		return null;
+		if (newStoreProd.getProduct() == null || newStoreProd.getStore() == null) return MethodReturnObject.of("request body missing product or store information");
+		if (newStoreProd.getStore().getId() == null) return MethodReturnObject.of("store object in request body is missing id");
+		
+	
+		MethodReturnObject<Product> mroForProd = prodSvc.addNewProduct(newStoreProd.getProduct());
+		if (mroForProd.getReturnMessage() != null) return MethodReturnObject.of(mroForProd.getReturnMessage());
+		
+		if(newStoreProd.getPrice() < 0) newStoreProd.setPrice(0d);
+		if(newStoreProd.getInventoryCount() < 0) newStoreProd.setInventoryCount(0);
+		
+		storeProdRepo.saveAndFlush(newStoreProd);
+		
+		return MethodReturnObject.of(newStoreProd);
 	}
 	
 	@Transactional
-	public StoreProduct updateInventoryProduct(StoreProduct newStoreProd)
+	public MethodReturnObject<StoreProduct> updateInventoryProduct(StoreProduct newStoreProd)
 	{
-		String errMessage = null;
 		
 		if (newStoreProd.getProduct() == null || newStoreProd.getStore() == null) return null;
 		if (newStoreProd.getProduct().getId() == null || newStoreProd.getStore().getId() == null) return null;
@@ -88,7 +110,9 @@ public class StoreProductService {
 		long storeId = newStoreProd.getStore().getId();
 		long prodId = prod.getId();
 		
-		StoreProduct prodToUpdate = getAStoresProductByStoreIdAndProductId(storeId, prodId);
+		MethodReturnObject<StoreProduct>  mroStoreProd = getAStoresProductByStoreIdAndProductId(storeId, prodId);
+		if (mroStoreProd.getReturnMessage() != null) return MethodReturnObject.of(mroStoreProd.getReturnMessage());
+		StoreProduct prodToUpdate = mroStoreProd.getReturnObject();
 		
 		Product updatedProduct = null;
 		
@@ -110,7 +134,7 @@ public class StoreProductService {
 		prodToUpdate.setPopularity(newStoreProd.getPopularity() != null ? newStoreProd.getPopularity() : prodToUpdate.getPopularity());
 		
 		storeProdRepo.saveAndFlush(prodToUpdate);
-		return prodToUpdate;
+		return MethodReturnObject.of(prodToUpdate);
 		
 	}
 	
@@ -121,13 +145,14 @@ public class StoreProductService {
 	 * @ return product Id of product removed from inventory
 	*/
 	@Transactional
-	public long removeProductFromStoreInventoryByProductId(long storeId, long productId)
+	public MethodReturnObject<Long> removeProductFromStoreInventoryByProductId(long storeId, long productId)
 	{
-		StoreProduct prodToRemove = getAStoresProductByStoreIdAndProductId(storeId, productId);
-		if (prodToRemove == null) return -1;
+		MethodReturnObject<StoreProduct>  mro = getAStoresProductByStoreIdAndProductId(storeId, productId);
+		if (mro.getReturnMessage() != null) return MethodReturnObject.of(mro.getReturnMessage());
+		StoreProduct prodToRemove = mro.getReturnObject();
 		
 		storeProdRepo.removeStoreProduct(storeId, productId);
-		return prodToRemove.getProduct().getId();
+		return MethodReturnObject.of(prodToRemove.getStore().getId());
 	}
 	
 }

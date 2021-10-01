@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.IMS.ApiResponse.ApiResponse;
+import com.example.IMS.ApiResponse.MethodReturnObject;
+import com.example.IMS.Product.Product;
 
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping(path = "api/v1/store_products", produces = "application/json; charset=UTF-8")
+@RequestMapping(path = "api/v1/store-products", produces = "application/json; charset=UTF-8")
 @AllArgsConstructor
 public class StoreProductController {
 	
@@ -26,40 +28,54 @@ public class StoreProductController {
 	public ApiResponse<List<StoreProduct>> getAllProductsForStoreByStoreId(@PathVariable("store_id") long storeId,
 			@RequestParam(value ="inStock", required = false)String inStock)
 	{
-		List<StoreProduct> storeProds = storeProdSvc.getAllProductsForStoreByStoreId(storeId, inStock);
-		if (storeProds == null) return ApiResponse.failure(String.format("Could not find store with id ' %d'  ", storeId));
+		MethodReturnObject<List<StoreProduct>>  mro = storeProdSvc.getAllProductsForStoreByStoreId(storeId, inStock);
+		List<StoreProduct> storeProds = mro.getReturnObject() != null ? mro.getReturnObject() : null;
+		if (storeProds == null) return ApiResponse.failure(FAIL + mro.getReturnMessage());
 		return ApiResponse.success(storeProds);
 	}
 	
 	@GetMapping(path = "/store-product/by_id/{store_id}/{product_id}")
 	public ApiResponse<StoreProduct> getAStoresProductByStoreIdAndProductId(@PathVariable("store_id")long storeId, @PathVariable("product_id") long productId)
 	{
-		StoreProduct storeProd = storeProdSvc.getAStoresProductByStoreIdAndProductId(storeId, productId);
-		if (storeProd == null) return ApiResponse.failure(String.format("Could not retrieve product for store with id ' %d ' and product with id ' %d '  ", storeId, productId));
+		MethodReturnObject<StoreProduct>  mro = storeProdSvc.getAStoresProductByStoreIdAndProductId(storeId, productId);
+		StoreProduct storeProd = mro.getReturnObject() != null ? mro.getReturnObject() : null;
+		if (storeProd == null) return ApiResponse.failure(FAIL + mro.getReturnMessage());
 		return ApiResponse.success(storeProd);
 	}
 	
 	@GetMapping(path = "/store-product/by_upc/{store_id}/{product_upc}")
 	public ApiResponse<StoreProduct> getAStoresProductByStoreIdAndProductIUpcNumber(@PathVariable("store_id")long storeId, @PathVariable("product_upc") long upcNumber)
 	{
-		StoreProduct storeProd = storeProdSvc.getAStoresProductByStoreIdAndProductIUpcNumber(storeId, upcNumber);
-		if (storeProd == null) return ApiResponse.failure(String.format("Could not retrieve product for store with id ' %d ' and product with UPC  ' %d '  ", storeId, upcNumber));
+		MethodReturnObject<StoreProduct>  mro = storeProdSvc.getAStoresProductByStoreIdAndProductIUpcNumber(storeId, upcNumber);
+		StoreProduct storeProd = mro.getReturnObject() != null ? mro.getReturnObject() : null;
+		if (storeProd == null) return ApiResponse.failure(FAIL + mro.getReturnMessage());
 		return ApiResponse.success(storeProd);
+	}
+	
+	@PostMapping(path = "/store-product/new")
+	public ApiResponse<StoreProduct> addNewProduct(@RequestBody StoreProduct newStoreProd)
+	{
+		MethodReturnObject<StoreProduct>  mro = storeProdSvc.addNewProductToStoreInventory(newStoreProd);
+		StoreProduct newProdAdded = mro.getReturnObject() != null ? mro.getReturnObject() : null;
+		if (newProdAdded == null) return ApiResponse.failure(FAIL + mro.getReturnMessage());
+		return ApiResponse.success(newProdAdded);
 	}
 	
 	@PutMapping(path = "/store-product/update")
 	public ApiResponse<StoreProduct> updateInventoryProduct(@RequestBody StoreProduct storeProd)
 	{
-		StoreProduct updatedProd = storeProdSvc.updateInventoryProduct(storeProd);
-		if(updatedProd == null) return ApiResponse.failure("Failed to update product, ensure data to update is valid");
+		MethodReturnObject<StoreProduct>  mro = storeProdSvc.updateInventoryProduct(storeProd);
+		StoreProduct updatedProd = mro.getReturnObject() != null ? mro.getReturnObject() : null;
+		if(updatedProd == null) return ApiResponse.failure(FAIL + mro.getReturnMessage());
 		return ApiResponse.success(updatedProd);
 	}
 	
 	@DeleteMapping(path = "/store-product/delete/by_id/{store_id}/{product_id}")
 	public ApiResponse<Long> removeProductFromStoreInventoryByProductId(@PathVariable("store_id")long storeId, @PathVariable("product_id") long productId)
 	{
-		long idOfProdRemoved = storeProdSvc.removeProductFromStoreInventoryByProductId(storeId, productId);
-		if (idOfProdRemoved == -1) return ApiResponse.failure(String.format("Could not remove product for store with id ' %d ' and product with id ' %d '  ", storeId, productId));
+		MethodReturnObject<Long>  mro = storeProdSvc.removeProductFromStoreInventoryByProductId(storeId, productId);
+		long idOfProdRemoved = mro.getReturnObject() != null ? mro.getReturnObject() : null;
+		if (idOfProdRemoved == -1) return ApiResponse.failure(FAIL + mro.getReturnMessage());
 		return ApiResponse.success(idOfProdRemoved);
 	}
 

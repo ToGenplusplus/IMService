@@ -51,7 +51,7 @@ public class ProductService {
 	}
 	
 	@Transactional
-	public Product addNewProduct(Product newProd)
+	public MethodReturnObject<Product> addNewProduct(Product newProd)
 	{
 		/**
 		 * CHECKS
@@ -59,11 +59,21 @@ public class ProductService {
 		 * REQUIRED: CATEGORY, NAME, UPC NUMBER
 		 * UNIQUE: UPC_NUMBER
 		 */
-		if (newProd.getCategory() == null || newProd.getProductName() == null || newProd.getUpcNumber() == null) return null;
+		if (newProd.getCategory() == null || newProd.getProductName() == null || newProd.getUpcNumber() == null) 
+		{
+			
+			return MethodReturnObject.of("request body missing category object, upcNumber or productName information");
+		}
 		
-		if(newProd.getUpcNumber().toString().length() != 12) return null;
+		if(newProd.getUpcNumber().toString().length() != 12) 
+		{
+			return MethodReturnObject.of("invalid upcNumber, upc's are 12 digits in length");
+		}
 		
-		if(newProd.getCategory().getId() == null || catSvc.getCategoryById(newProd.getCategory().getId()) == null) return null;
+		if(newProd.getCategory().getId() == null || catSvc.getCategoryById(newProd.getCategory().getId()) == null) 
+		{
+			return MethodReturnObject.of("category id is missing or category with provided id does not exist");
+		}
 		
 		List<Product> allProds = getAllProducts();
 		
@@ -71,12 +81,12 @@ public class ProductService {
 		{
 			if (prod.getUpcNumber().equals(newProd.getUpcNumber()))
 			{
-				return null;
+				return MethodReturnObject.of(String.format("upcNumber %d already exists in system. ", newProd.getUpcNumber()));
 			}
 		}
 		
 		productRepo.saveAndFlush(newProd);
-		return newProd; 
+		return MethodReturnObject.of(newProd); 
 	}
 	
 	@Transactional
