@@ -184,7 +184,7 @@ public class StoreProductService implements IStoreProductService{
 		StoreProduct prodToRemove = mro.getReturnObject();
 		
 		storeProdRepo.removeStoreProduct(storeId, productId, LocalDate.now());
-		return MethodReturnObject.of(prodToRemove.getStore().getId());
+		return MethodReturnObject.of(prodToRemove.getProduct().getId());
 	}
 	
 }
