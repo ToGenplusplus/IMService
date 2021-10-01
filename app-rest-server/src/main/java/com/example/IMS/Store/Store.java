@@ -25,11 +25,23 @@ public class Store {
 	private Set<StoreProduct> storeProducts;
 	
 	protected Store(){}
+	
+	
+	//for testing purposes
+	public Store(Long id, String storeName, Set<StoreProduct> storeProducts) {
+		super();
+		this.id = id;
+		this.storeName = storeName;
+		this.storeProducts = storeProducts;
+	}
+
+
 
 	public Store(String storeName, Set<StoreProduct> storeProducts) {
 		this.storeName = storeName;
 		this.storeProducts = storeProducts;
 	}
+	
 
 	public Long getId() {
 		return id;
