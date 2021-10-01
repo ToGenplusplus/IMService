@@ -7,11 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.IMS.ApiResponse.ApiResponse;
 
-import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping(path = "api/v1/stores", produces = "application/json; charset=UTF-8")
-@AllArgsConstructor
 public class StoreController {
 	
 	private final StoreService storeSvc;
