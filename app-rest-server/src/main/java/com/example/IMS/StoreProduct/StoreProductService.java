@@ -47,18 +47,20 @@ public class StoreProductService implements IStoreProductService{
 			return true;
 		});
 		
-		if(categoryId != null) storeProducts.removeIf(prod-> {
+		if(categoryId != null)
+		{
 			try
 			{
 				long paramCatId = Long.parseLong(categoryId);
-				long prodCatId = prod.getProduct().getCategory().getId();
-				
-				return prodCatId != paramCatId;
+				storeProducts.removeIf(prod-> {
+					long prodCatId = prod.getProduct().getCategory().getId();
+					return prodCatId != paramCatId;
+				});
 			}catch( NumberFormatException nfe)
 			{
-				return false;
+				return MethodReturnObject.of(nfe.getMessage());
 			}
-		});
+		}
 		
 		if(rangeLower != null && rangeUpper != null) 
 		{
