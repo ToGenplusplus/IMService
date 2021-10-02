@@ -27,7 +27,7 @@ public class StoreProductController {
 			@RequestParam(value ="rangeLower", required = false)String rangeLower,
 			@RequestParam(value ="rangeUpper", required = false)String rangeUpper,
 			@RequestParam(value ="rating", required = false)String rating,
-			@RequestParam(value ="category_id", required = false)String categoryId)
+			@RequestParam(value ="categoryId", required = false)String categoryId)
 	{
 		MethodReturnObject<List<StoreProduct>>  mro = storeProdSvc.getAllProductsForStoreByStoreId(storeId, inStock, rangeLower, rangeUpper, rating, categoryId);
 		List<StoreProduct> storeProds = mro.getReturnObject() != null ? mro.getReturnObject() : null;
