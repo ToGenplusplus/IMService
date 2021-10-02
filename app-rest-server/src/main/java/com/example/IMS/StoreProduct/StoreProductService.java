@@ -136,7 +136,7 @@ public class StoreProductService implements IStoreProductService{
 		MethodReturnObject<Product> mroForProd = prodSvc.addNewProduct(newStoreProd.getProduct());
 		if (mroForProd.getReturnMessage() != null) return MethodReturnObject.of(mroForProd.getReturnMessage());
 		
-		if(newStoreProd.getPrice() < 0) newStoreProd.setPrice(0d);
+		if(newStoreProd.getPrice() == null || newStoreProd.getPrice() < 0) newStoreProd.setPrice(0d);
 		if(newStoreProd.getInventoryCount() < 0) newStoreProd.setInventoryCount(0);
 		newStoreProd.setDateAdded(LocalDate.now());
 		
@@ -150,8 +150,8 @@ public class StoreProductService implements IStoreProductService{
 	public MethodReturnObject<StoreProduct> updateInventoryProduct(StoreProduct newStoreProd)
 	{
 		
-		if (newStoreProd.getProduct() == null || newStoreProd.getStore() == null) return null;
-		if (newStoreProd.getProduct().getId() == null || newStoreProd.getStore().getId() == null) return null;
+		if (newStoreProd.getProduct() == null || newStoreProd.getStore() == null) return MethodReturnObject.of("request body missing product or store information");
+		if (newStoreProd.getProduct().getId() == null || newStoreProd.getStore().getId() == null) return MethodReturnObject.of("required id's are missing from request body");
 		
 		Product prod = newStoreProd.getProduct();
 		
