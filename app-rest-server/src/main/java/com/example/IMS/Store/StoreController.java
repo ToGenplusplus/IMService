@@ -12,10 +12,10 @@ import com.example.IMS.ApiResponse.ApiResponse;
 @RequestMapping(path = "api/v1/stores", produces = "application/json; charset=UTF-8")
 public class StoreController {
 	
-	private final StoreService storeSvc;
+	private final IStoreService storeSvc;
 
 	@Autowired
-	public StoreController(StoreService storeSvc) {
+	public StoreController(IStoreService storeSvc) {
 		this.storeSvc = storeSvc;
 	}
 	

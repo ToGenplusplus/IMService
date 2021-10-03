@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "api/v1/categories", produces = "application/json; charset=UTF-8")
 public class CategoryController {
 	
-	private final CategoryService catSvc;
+	private final ICategoryService catSvc;
 
 	@Autowired
-	protected CategoryController(CategoryService catSvc) {
+	protected CategoryController(ICategoryService catSvc) {
 		this.catSvc = catSvc;
 	}
 	

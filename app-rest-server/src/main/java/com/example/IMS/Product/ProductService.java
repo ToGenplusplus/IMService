@@ -7,16 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.IMS.ApiResponse.MethodReturnObject;
-import com.example.IMS.Category.CategoryService;
+import com.example.IMS.Category.ICategoryService;
 
 @Service
 public class ProductService implements IProductService{
 	
 	private final ProductRepository productRepo;
-	private final CategoryService catSvc;
+	private final ICategoryService catSvc;
 
 	@Autowired
-	public ProductService(ProductRepository productRepo, CategoryService catSvc) {
+	public ProductService(ProductRepository productRepo, ICategoryService catSvc) {
 		this.productRepo = productRepo;
 		this.catSvc = catSvc;
 	}

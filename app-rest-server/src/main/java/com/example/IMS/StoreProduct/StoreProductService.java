@@ -8,23 +8,25 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.example.IMS.ApiResponse.MethodReturnObject;
+import com.example.IMS.Product.IProductService;
 import com.example.IMS.Product.Product;
 import com.example.IMS.Product.ProductService;
+import com.example.IMS.Store.IStoreService;
 import com.example.IMS.Store.StoreService;
 
 @Service
 public class StoreProductService implements IStoreProductService{
 
 	private final StoreProductRepository storeProdRepo;
-	private final StoreService storeSvc;
-	private final ProductService prodSvc;
+	private final IStoreService storeSvc;
+	private final IProductService prodSvc;
 	
 	private final String MISSING_STORE_ID = " Could not find store with id %d";
 
 	@Autowired
 	public StoreProductService(StoreProductRepository storeProdRepo, 
-			StoreService storeSvc,
-			ProductService prodSvc) {
+			IStoreService storeSvc,
+			IProductService prodSvc) {
 		this.storeProdRepo = storeProdRepo;
 		this.storeSvc = storeSvc;
 		this.prodSvc = prodSvc;
