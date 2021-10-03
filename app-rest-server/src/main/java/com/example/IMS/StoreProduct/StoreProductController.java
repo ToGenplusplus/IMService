@@ -13,11 +13,11 @@ import com.example.IMS.ApiResponse.MethodReturnObject;
 @RequestMapping(path = "api/v1/store-products", produces = "application/json; charset=UTF-8")
 public class StoreProductController {
 	
-	private final StoreProductService storeProdSvc;
+	private final IStoreProductService storeProdSvc;
 	private final String FAIL = "OPERATION FAILED : ";
 
 	@Autowired
-	public StoreProductController(StoreProductService storeProdSvc) {
+	public StoreProductController(IStoreProductService storeProdSvc) {
 		this.storeProdSvc = storeProdSvc;
 	}
 	
